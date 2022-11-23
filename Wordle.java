@@ -11,6 +11,9 @@ public class Wordle {
             
             frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
+            
+            WordleGUI gui = new WordleGUI();
+            frame.getContentPane().add(gui);
         } catch (Exception e) {
             System.out.println("Could not make the WordleGUI: " + e);
         }
