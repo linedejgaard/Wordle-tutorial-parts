@@ -27,32 +27,6 @@ public class Feedback {
         }
     }
 
-    public void updateResponses(Word currentGuess, int numGuess) {
-        String currWord = currentGuess.toString();
-        String currSecret = secretWord.toString();
-
-        for (int i = 0; i < currWord.length(); i++) {
-
-            char letter = currWord.charAt(i);
-            int asciicode = letter;
-
-            printLetterResponses();
-
-            // update key responses
-            if (currSecret.charAt(i) == letter) {
-                letterResponses[asciicode-65] = Response.CORRECT;
-            } else if (secretWord.contains("" + letter) && (letterResponses[asciicode-65] != Response.CORRECT)) { //green cannot be yellow again
-                letterResponses[asciicode-65] = Response.ALMOST_CORRECT;
-            } else if (letterResponses[asciicode-65] == Response.UNKNOWN){
-                letterResponses[asciicode-65] = Response.WRONG;
-            } 
-            
-            guessResponses[numGuess] = secretWord.getLetterResponses(currentGuess);
-            
-        }
-        printResponses();
-    }
-
     private void printResponses() {
         System.out.println("\nBOARD RESPONSES:");
         for (int i = 0; i < guessResponses.length; i++) {
@@ -87,6 +61,34 @@ public class Feedback {
 
     public Response getGuessResponse(int row, int col) {
         return guessResponses[row][col];
+    }
+
+    private Response getLetterResponse(String currSecret, int index, Response currentLetterResponse, char letter) {
+        if (currSecret.charAt(index) == letter) {
+            return Response.CORRECT;
+        } else if (secretWord.contains("" + letter) && (currentLetterResponse != Response.CORRECT)) { //green cannot be yellow again
+            return Response.ALMOST_CORRECT;
+        } else if (currentLetterResponse == Response.UNKNOWN){
+            return Response.WRONG;
+        }
+        return Response.UNKNOWN;
+    }
+
+    public void updateResponses(Word currentGuess, int numGuess) {
+        String currWord = currentGuess.toString();
+        String currSecret = secretWord.toString();
+
+        for (int i = 0; i < currWord.length(); i++) {
+
+            char letter = currWord.charAt(i);
+            int asciicode = letter;
+            Response currentLetterResponse = letterResponses[asciicode-65];
+
+            letterResponses[asciicode-65] = getLetterResponse(currSecret, i, currentLetterResponse, letter);
+            printLetterResponses();
+        }
+        guessResponses[numGuess] = secretWord.getLetterResponses(currentGuess);
+        printResponses();
     }
 
 }
