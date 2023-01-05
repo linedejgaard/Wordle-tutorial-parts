@@ -71,7 +71,7 @@ public class Feedback {
         } else if (currentLetterResponse == Response.UNKNOWN){
             return Response.WRONG;
         }
-        return Response.UNKNOWN;
+        return currentLetterResponse;
     }
 
     public void updateResponses(Word currentGuess, int numGuess) {
